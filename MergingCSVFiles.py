@@ -42,6 +42,17 @@ def DictConvert(CSVFile, Column, Skip1stLine = True):
         Reader= csv.DictReader(File)
         for row in Reader:
             NumberOfInvalidFields = 0 #Incase there is a field of an empyt string 
+            
+            #Incase the title field name was written different
+            #example Column = "UniprotID" but the IDs are under the fieldname "  Uniprot_ID"
+            #this checks if Column is appropriate if not it overwrites column to the appropriate one
+            #note that Column must be a sub string to work. 
+            if not (Column in Reader.fieldnames):
+                for name in Reader.fieldnames:
+                    if Column in name:
+                        Column = name
+
+            
             key = row[Column]
             val = {}
             for field in Reader.fieldnames:
@@ -84,6 +95,10 @@ class InputError(Exception):
 import csv
 with open('MergedCSVFile.csv', 'w') as MergedFile:
     
+    #if files don't have the same IDs this will be a place holder
+    #for the missing fields
+    DefaultMissingInFile2 = {}
+    
     #FileOneIDs = List_of_IDs('Proteins_MS_mock.csv', 'UniProt_ID')
     Data1, Fields1 = DictConvert('CompiledData.csv', 'UniProt_ID')
     Data2, Fields2 = DictConvert('Proteins_MS_mock.csv', 'UniProt_ID')
@@ -92,20 +107,47 @@ with open('MergedCSVFile.csv', 'w') as MergedFile:
     MergedWriter = csv.DictWriter(MergedFile, fieldnames=fieldnamesMerged)
     MergedWriter.writeheader()
     
+    #if files don't have the same IDs this will be a place holder
+    #for the information that would have been in file2
+    DefaultMissingInFile2 = {}
+    for field in Fields2:
+        DefaultMissingInFile2[field] = ""
+        
+    #if files don't have the same IDs this will be a place holder
+    #for the information that would have been in file1
+    DefaultMissingInFile1 = {}
+    for field in Fields1:
+        DefaultMissingInFile1[field] = ""
+    
     for Key1 in Data1.keys():
             if Key1 in Data2.keys():
                 Data1[Key1].update(Data2[Key1])
-                del Data2[Key1]
+                
                 
                 LineToWrite = {'UniProt_ID' : Key1}
                 LineToWrite.update(Data1[Key1])
                 
                 MergedWriter.writerow(LineToWrite)
+                
+                del Data2[Key1]
             else:
-                raise InputError("Files do not contain the same IDs")
+                
+                Data1[Key1].update(DefaultMissingInFile2)
+                LineToWrite = {'UniProt_ID' : Key1}
+                LineToWrite.update(Data1[Key1])
+                
+                MergedWriter.writerow(LineToWrite)
+                 
                 
     if Data2 != {}:
-        raise InputError("Files do not contain the same IDs")
+        for Key2 in Data2.keys():
+            
+            
+            Data2[Key2].update(DefaultMissingInFile1)
+            LineToWrite = {'UniProt_ID' : Key2}
+            LineToWrite.update(Data2[Key2])
+        
+        MergedWriter.writerow(LineToWrite)
         
         
         
