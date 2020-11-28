@@ -26,7 +26,7 @@ with open('DisplayData.html', 'w') as htmlFile, open("CompiledData.csv", "r") as
             "<div class=\"search-app\">\n",
             "<h1>Search Proteins</h1>",
             "<div id=\"search\"></div>\n",
-            "<table id=\"protein_information\">\n<thead>\n<tr>\n"]
+            "<table id=\"protein_information\" class = \"table table-sortable\">\n<thead>\n<tr>\n"]
 
     htmlFile.writelines(Body)
         
@@ -52,6 +52,7 @@ with open('DisplayData.html', 'w') as htmlFile, open("CompiledData.csv", "r") as
                "</table>\n<",
                "</div>\n",
                "<script src=\"script.js\"></script>\n",
+               "<script src=\"tableSort.js\"></script>\n",
                "</body>\n",
                "</html>"
                ]
