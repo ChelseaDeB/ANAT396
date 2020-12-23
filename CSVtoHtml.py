@@ -51,7 +51,7 @@ with open('DisplayData.html', 'w') as htmlFile, open("CompiledData.csv", "r") as
     Closing = ["</tbody>\n",
                "</table>\n<",
                "</div>\n",
-               "<script src=\"script.js\"></script>\n",
+               "<script src=\"tableSearch.js\"></script>\n",
                "<script src=\"tableSort.js\"></script>\n",
                "</body>\n",
                "</html>"
