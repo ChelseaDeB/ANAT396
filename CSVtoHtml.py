@@ -7,12 +7,13 @@ Created on Mon Oct 26 21:12:33 2020
 """
 import csv
 
-with open('DisplayData.html', 'w') as htmlFile, open("CompiledData.csv", "r") as dataFile:
+with open('DisplayData.html', 'w') as htmlFile, open("CompiledData.csv", "r") as dataFile:#creating file for html and opening csv file to convert 
     
     HtmlStart = ["<!DOCTYPE html> \n", "<html>\n"] 
     htmlFile.writelines(HtmlStart)
     data = csv.reader(dataFile, delimiter=',')
     
+    #creating the html head table tag
     Head = ["<head>\n",
             "<title> Protein information</title>\n",
             "<meta charset=\"UTF-8\">\n",
@@ -20,8 +21,7 @@ with open('DisplayData.html', 'w') as htmlFile, open("CompiledData.csv", "r") as
             "</head>\n"]
     htmlFile.writelines(Head)
    
-    #for row in data:
-        #print(row)
+    #creating the html body table tag
     Body = ["<body>\n",
             "<div class=\"search-app\">\n",
             "<h1>Search Proteins</h1>",
@@ -33,12 +33,13 @@ with open('DisplayData.html', 'w') as htmlFile, open("CompiledData.csv", "r") as
     dataDict = csv.DictReader(dataFile)
 
    
-  
+    #writing the headers for the html file 
     for fieldname in dataDict.fieldnames:
         htmlFile.write("<th>"+fieldname+"</th>\n")
     
     htmlFile.write("</tr>\n</thead>\n<tbody>\n")
     
+    #writing the information into the html file 
     line = 0
     for row in dataDict:
         if line!=0 :
@@ -48,6 +49,7 @@ with open('DisplayData.html', 'w') as htmlFile, open("CompiledData.csv", "r") as
             htmlFile.write("</tr>\n")      
         line=line+1
 
+    #closing the tags 
     Closing = ["</tbody>\n",
                "</table>\n<",
                "</div>\n",

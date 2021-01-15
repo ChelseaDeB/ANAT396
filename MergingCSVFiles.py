@@ -81,14 +81,41 @@ def DictConvert(CSVFile, Column, Skip1stLine = True):
     File.close()
     return Dict, Fields
 
+
+'''
+Returns a list of all the data stored in a specific column in the order that 
+they appear in the file. Where the index of the file correlates to the row 
+that the ID is in in the file of interest
+
+input:
     
-            
-'''Defining my own exception for when the files don't have the 
-same IDs'''
-class InputError(Exception):
-    def __init__(self, message):
-        self.message = message
+    CSVFile: pass the reader of the name of the csv file  you want to analyze. 
+    Type -> string
+    
+    Column: A string of the fieldname for the column that holds the IDs
+   
+    Skip1stLine: There is a defualt value called, Skip1stLine, which when true will return a list 
+    with a place holder in the list. This accounts for the first line of the csv file 
+    which gives the title of the info
+    
+    
+    MIGHT BE USEFUL FOR BIGGER FILES
+    
+    '''
+    
+def List_of_IDs(CSVFile, Column, Skip1stLine = True ):
+    if Skip1stLine:
+        ListData = ["PlaceHolder"]   
+    else:
+        ListData = ["PlaceHolder"]
         
+    with open(CSVFile) as File:
+        Reader= csv.DictReader(File)
+        for row in Reader:
+            ListData = ListData + [row[Column]]
+    File.close()
+    return(ListData)
+            
     
         
 
@@ -100,8 +127,8 @@ with open('MergedCSVFile.csv', 'w') as MergedFile:
     DefaultMissingInFile2 = {}
     
     #FileOneIDs = List_of_IDs('Proteins_MS_mock.csv', 'UniProt_ID')
-    Data1, Fields1 = DictConvert('CompiledData.csv', 'UniProt_ID')
-    Data2, Fields2 = DictConvert('Proteins_MS_mock.csv', 'UniProt_ID')
+    Data1, Fields1 = DictConvert('CompiledData.csv', 'UniProt_ID') #Reading from file 1
+    Data2, Fields2 = DictConvert('Proteins_MS_mock.csv', 'UniProt_ID') #Reading from file 2
     
     fieldnamesMerged = ['UniProt_ID'] + Fields1 + Fields2
     MergedWriter = csv.DictWriter(MergedFile, fieldnames=fieldnamesMerged)
@@ -151,40 +178,7 @@ with open('MergedCSVFile.csv', 'w') as MergedFile:
         
         
         
-'''
-Returns a list of all the data stored in a specific column in the order that 
-they appear in the file. Where the index of the file correlates to the row 
-that the ID is in in the file of interest
 
-input:
-    
-    CSVFile: pass the reader of the name of the csv file  you want to analyze. 
-    Type -> string
-    
-    Column: A string of the fieldname for the column that holds the IDs
-   
-    Skip1stLine: There is a defualt value called, Skip1stLine, which when true will return a list 
-    with a place holder in the list. This accounts for the first line of the csv file 
-    which gives the title of the info
-    
-    
-    MIGHT BE USEFUL FOR BIGGER FILES
-    
-    '''
-    
-def List_of_IDs(CSVFile, Column, Skip1stLine = True ):
-    if Skip1stLine:
-        ListData = ["PlaceHolder"]   
-    else:
-        ListData = ["PlaceHolder"]
-        
-    with open(CSVFile) as File:
-        Reader= csv.DictReader(File)
-        for row in Reader:
-            ListData = ListData + [row[Column]]
-    File.close()
-    return(ListData)
-        
                 
 
 
